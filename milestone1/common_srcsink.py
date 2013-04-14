@@ -9,4 +9,7 @@ def hamming(s1,s2):
     # the vector lengths) and then find the hamming distance
     # between the two. Also compute the bit error rate  .
     # BER = (# bits in error)/(# total bits )
+    hamming_d = 0
+    ber = 0
+
     return hamming_d, ber

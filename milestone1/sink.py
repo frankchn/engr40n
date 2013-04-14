@@ -32,12 +32,12 @@ class Sink:
         payload = recd_bits[32:(32 + payload_length * 8)]
 
         if srctype == 'text':
-            rcd_payload = self.bits2text(payload)
+            print self.bits2text(payload)
         elif srctype == 'image':
             self.image_from_bits(payload, '')
         
         # Return the received payload for comparison purposes
-        return rcd_payload
+        return payload
 
     def bits2text(self, bits):
         string_bits = [str(i) for i in bits]

@@ -25,20 +25,20 @@ class Source:
         # Form the databits, from the filename 
         if self.fname is not None:
             if self.fname.endswith('.png') or self.fname.endswith('.PNG'):
-                databits = self.bits_from_image(self.fname)
+                payload = self.bits_from_image(self.fname)
                 content_type = 'image'
                 content_len = self.filesize(self.fname)
             else:
-                databits = self.text2bits(self.fname)  
+                payload = self.text2bits(self.fname)  
                 content_type = 'text'
                 content_len = self.filesize(self.fname)
         else:               
-            databits = [ 1 for x in range(self.monotone) ]
+            payload = [ 1 for x in range(self.monotone) ]
             content_type = 'monotone'
             content_len = self.monotone
 
         header = self.get_header(content_len, content_type)
-        payload = header + databits
+        databits = header + payload
 
         return payload, databits
 
