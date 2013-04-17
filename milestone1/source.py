@@ -12,7 +12,7 @@ class Source:
         # The initialization procedure of source object
         self.monotone = monotone
         self.fname = filename
-        print 'Source: Filename: ' + filename + ', Monotone: ' + str(monotone)
+        print 'Source'
 
     # header format is 32 bits long
     # bits one and two are:
