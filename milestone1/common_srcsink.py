@@ -1,3 +1,4 @@
+# FRANK CHEN + NICK WU
 import numpy
 import math
 import operator

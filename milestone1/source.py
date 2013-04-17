@@ -1,3 +1,4 @@
+# FRANK CHEN + NICK WU
 # audiocom library: Source and sink functions
 import common_srcsink as common
 import Image
