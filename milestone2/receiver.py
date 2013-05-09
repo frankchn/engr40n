@@ -37,7 +37,7 @@ class Receiver:
         First, find the first sample index where you detect energy based on the
         moving average method described in the milestone 2 description.
         '''
-        
+
         index = 0
         ret = -1
         while ret != -1 and index + self.spb <= len(demod_samples):
