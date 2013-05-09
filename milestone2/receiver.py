@@ -40,7 +40,7 @@ class Receiver:
         
         index = 0
         ret = -1
-        while ret != -1 && index + self.spb <= len(demod_samples):
+        while ret != -1 and index + self.spb <= len(demod_samples):
             average = sum(demod_samples[index:index+spb]) * 1.0 / self.spb
             if(average > thresh):
                 ret = index
@@ -86,21 +86,64 @@ class Receiver:
         return energy_offset + preamble_offset
         
     def demap_and_check(self, demod_samples, preamble_start):
+        preamble = [1, 0, 1, 1, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 1, 0, 1];
         '''
         Demap the demod_samples (starting from [preamble_start]) into bits.
         1. Calculate the average values of midpoints of each [spb] samples
            and match it with the known preamble bit values.
+        '''
+        zero_sum = 0.0
+        zero_cnt = 0
+        one_sum  = 1.0
+        one_cnt  = 0
+
+        for index, val in enumerate(preamble):
+            start_location = preamble_start + self.spb * index + self.spb / 4
+            end_location = start_location + 3 * self.spb / 4
+            current_avg = average(demod_samples[start_location : end_location])
+            if val == 1:
+                one_sum += current_avg
+                one_cnt += 1
+            else:
+                zero_sum += current_avg
+                zero_cnt += 1
+
+        one = one_sum / one_cnt
+        zero = zero_sum / zero_cnt
+
+        '''
         2. Use the average values and bit values of the preamble samples from (1)
            to calculate the new [thresh], [one], [zero]
+        '''
+        thresh = (one_avg + zero_avg) / 2.0
+
+        '''
         3. Demap the average values from (1) with the new three values from (2)
+        '''
+        bits = []
+        offset = preamble_start
+        while offset < len(demod_samples):
+            start_location = offset + self.spb / 4
+            end_location = offset + 3 * self.spb / 4
+            current_value = average(demod_samples[start_location : end_location]) - zero
+            if current_value > threshold:
+                bits.append(1)
+            else:
+                bits.append(0)
+
+            offset += self.spb
+
+        '''
         4. Check whether the first [preamble_length] bits of (3) are equal to
            the preamble. If it is proceed, if not terminate the program. 
         Output is the array of data_bits (bits without preamble)
         '''
+        for index, val in enumerate(preamble):
+            if bits[index] != preamble[index]:
+                print "Cannot detect preamble!"
+                sys.exit()
 
-        # Fill in your implementation
-
-        return data_bits # without preamble
+        return bits[len(preamble):]
 
     def demodulate(self, samples):
         return common.demodulate(self.fc, self.samplerate, samples)
