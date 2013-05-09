@@ -47,11 +47,11 @@ class Receiver:
         index = 0
         ret = -1
         while ret == -1 and index + self.spb <= len(demod_samples):
-            average = sum(demod_samples[index:index+self.spb]) * 1.0 / self.spb
-            if(average > thresh):
+            average = sum(demod_samples[index+self.spb/4:index+self.spb*3/4]) * 2.0 / self.spb
+            if(average > (one + thresh)/2):
                 ret = index
             index += 1
-            print "sample", index, "threshold", average, "target", thresh
+            print "sample", index, "threshold", average, "target", (one + thresh)/2
         
         energy_offset = ret
         if energy_offset < 0:
@@ -71,7 +71,7 @@ class Receiver:
         preamble = [1, 0, 1, 1, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 1, 0, 1];
         
         best_offset = 0
-        highest_correlation = -1
+        highest_correlation = -1000
         offset = 0
         while offset <= 3 * self.spb * len(preamble):
             curr_correlation = 0
