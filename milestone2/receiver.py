@@ -38,6 +38,12 @@ class Receiver:
         moving average method described in the milestone 2 description.
         '''
 
+        prefix_sum = [0]
+        index = 0
+        while index < len(demod_samples):
+            prefix_sum.append(prefix_sum[-1] + demod_samples[index])
+            index = index + 1
+        
         index = 0
         ret = -1
         while ret == -1 and index + self.spb <= len(demod_samples):
@@ -72,11 +78,8 @@ class Receiver:
             preamble_index = 0
             curr_offset = offset
             while preamble_index < len(preamble):
-                count = 0
-                while count < self.spb:
-                    curr_correlation = curr_correlation + preamble[preamble_index] * demod_samples[energy_offset + curr_offset]
-                    curr_offset = curr_offset + 1
-                    count = count + 1
+                if preamble[preamble_index] == 1:
+                    curr_correlation = curr_correlation + demod_samples[energy_offset + offset + (preamble_index+1) * self.spb] - demod_samples[energy_offset + offset + (preamble_index) * self.spb]
                 preamble_index = preamble_index + 1
             if curr_correlation > highest_correlation:
                 highest_correlation = curr_correlation
