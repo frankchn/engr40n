@@ -73,8 +73,8 @@ class Receiver:
         highest_correlation = -1000
         offset = 0
         
-        #while offset <= 3 * self.spb * len(preamble):
-        while offset <= 256:
+        while offset <= 2 * self.spb * len(preamble):
+        #while offset <= 256:
             curr_correlation = 0
             preamble_index = 0
             curr_offset = offset
