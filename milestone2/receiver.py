@@ -77,6 +77,7 @@ class Receiver:
                 highest_correlation = curr_correlation
                 best_offset = offset
             print "current offset @", offset, "| current correl @", curr_correlation
+            offset = offset + 1
         
         preamble_offset = best_offset
         
