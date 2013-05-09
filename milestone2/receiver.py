@@ -51,7 +51,6 @@ class Receiver:
             if(average > (one + thresh)/2):
                 ret = index
             index += 1
-            print "sample", index, "threshold", average, "target", (one + thresh)/2
         
         energy_offset = ret
         if energy_offset < 0:
@@ -73,7 +72,9 @@ class Receiver:
         best_offset = 0
         highest_correlation = -1000
         offset = 0
-        while offset <= 3 * self.spb * len(preamble):
+        
+        #while offset <= 3 * self.spb * len(preamble):
+        while offset <= 256:
             curr_correlation = 0
             preamble_index = 0
             curr_offset = offset
@@ -87,7 +88,6 @@ class Receiver:
             offset = offset + 1
             print "offset", offset, "curr_correlation", curr_correlation
 
-        
         preamble_offset = best_offset
 
         print preamble_offset
@@ -114,7 +114,7 @@ class Receiver:
 
         for index, val in enumerate(preamble):
             start_location = preamble_start + self.spb * index + self.spb / 4
-            end_location = start_location + 3 * self.spb / 4
+            end_location = start_location + self.spb / 2
             current_avg = sum(demod_samples[start_location : end_location]) * 1.0 / (self.spb / 2)
             if val == 1:
                 one_sum += current_avg
@@ -132,6 +132,8 @@ class Receiver:
         '''
         thresh = (one + zero) / 2.0
 
+        print one, zero, thresh
+
         '''
         3. Demap the average values from (1) with the new three values from (2)
         '''
@@ -139,14 +141,19 @@ class Receiver:
         offset = preamble_start
         while offset < len(demod_samples):
             start_location = offset + self.spb / 4
-            end_location = offset + 3 * self.spb / 4
+            end_location = start_location + self.spb / 2
             current_value = sum(demod_samples[start_location : end_location]) * 1.0 / (self.spb / 2)
+
+            print current_value, " against ", thresh
+
             if current_value > thresh:
                 bits.append(1)
             else:
                 bits.append(0)
 
             offset += self.spb
+
+        print bits
 
         '''
         4. Check whether the first [preamble_length] bits of (3) are equal to
