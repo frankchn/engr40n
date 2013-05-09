@@ -144,8 +144,6 @@ class Receiver:
             end_location = start_location + self.spb / 2
             current_value = sum(demod_samples[start_location : end_location]) * 1.0 / (self.spb / 2)
 
-            print current_value, " against ", thresh
-
             if current_value > thresh:
                 bits.append(1)
             else:
