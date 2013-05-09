@@ -86,7 +86,6 @@ class Receiver:
                 highest_correlation = curr_correlation
                 best_offset = offset
             offset = offset + 1
-            print "offset", offset, "curr_correlation", curr_correlation
 
         preamble_offset = best_offset
 
@@ -132,8 +131,6 @@ class Receiver:
         '''
         thresh = (one + zero) / 2.0
 
-        print one, zero, thresh
-
         '''
         3. Demap the average values from (1) with the new three values from (2)
         '''
@@ -150,8 +147,6 @@ class Receiver:
                 bits.append(0)
 
             offset += self.spb
-
-        print bits
 
         '''
         4. Check whether the first [preamble_length] bits of (3) are equal to
