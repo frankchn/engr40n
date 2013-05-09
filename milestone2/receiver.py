@@ -45,7 +45,7 @@ class Receiver:
             if(average > thresh):
                 ret = index
             index += 1
-            print "find first sample at", index
+            print "sample", index, "threshold", average, "target", thresh
         
         energy_offset = ret
         if energy_offset < 0:
@@ -67,7 +67,7 @@ class Receiver:
         best_offset = 0
         highest_correlation = -1
         offset = 0
-        while offset <= 2 * self.spb * len(preamble):
+        while offset <= 3 * self.spb * len(preamble):
             curr_correlation = 0
             preamble_index = 0
             curr_offset = offset
@@ -81,10 +81,13 @@ class Receiver:
             if curr_correlation > highest_correlation:
                 highest_correlation = curr_correlation
                 best_offset = offset
-            print "current offset @", offset, "| current correl @", curr_correlation
             offset = offset + 1
+            print "offset", offset, "curr_correlation", curr_correlation
+
         
         preamble_offset = best_offset
+
+        print preamble_offset
         
         '''
         [preamble_offset] is the additional amount of offset starting from [offset],
