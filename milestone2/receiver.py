@@ -37,9 +37,15 @@ class Receiver:
         First, find the first sample index where you detect energy based on the
         moving average method described in the milestone 2 description.
         '''
-        # Fill in your implementation of the high-energy check procedure
-
-        energy_offset = # fill in the result of the high-energy check
+        
+        index = 0
+        ret = -1
+        while ret != -1 && index + self.spb <= len(demod_samples):
+            average = sum(demod_samples[index:index+spb]) * 1.0 / self.spb
+            if(average > thresh):
+                ret = index
+        
+        energy_offset = ret
         if energy_offset < 0:
             print '*** ERROR: Could not detect any ones (so no preamble). ***'
             print '\tIncrease volume / turn on mic?'
@@ -50,10 +56,26 @@ class Receiver:
         Then, starting from the demod_samples[offset], find the sample index where
         the cross-correlation between the signal samples and the preamble 
         samples is the highest. 
+        [1, 0, 1, 1, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 1, 0, 1]
         '''
         # Fill in your implementation of the cross-correlation check procedure
         
-        preamble_offset = # fill in the result of the cross-correlation check 
+        preamble = [1, 0, 1, 1, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 1, 0, 1];
+        
+        best_offset = 0
+        highest_correlation = -1
+        offset = 0
+        while offset <= 2 * len(preamble):
+            curr_correlation = 0
+            i = 0
+            while i < len(preamble):
+                curr_correlation = curr_correlation + preamble[i] * demod_samples[energy_offset + offset + i]
+                i = i + 1
+            if curr_correlation > highest_correlation:
+                highest_correlation = curr_correlation
+                best_offset = offset
+        
+        preamble_offset = best_offset
         
         '''
         [preamble_offset] is the additional amount of offset starting from [offset],
