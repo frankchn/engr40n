@@ -137,7 +137,7 @@ class Receiver:
         while offset < len(demod_samples):
             start_location = offset + self.spb / 4
             end_location = offset + 3 * self.spb / 4
-            current_value = sum(demod_samples[start_location : end_location]) * 1.0 / (self.spb / 2) - zero
+            current_value = sum(demod_samples[start_location : end_location]) * 1.0 / (self.spb / 2)
             if current_value > thresh:
                 bits.append(1)
             else:
