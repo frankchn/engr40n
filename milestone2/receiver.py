@@ -79,7 +79,7 @@ class Receiver:
             curr_offset = offset
             while preamble_index < len(preamble):
                 if preamble[preamble_index] == 1:
-                    curr_correlation = curr_correlation + demod_samples[energy_offset + offset + (preamble_index+1) * self.spb] - demod_samples[energy_offset + offset + (preamble_index) * self.spb]
+                    curr_correlation = curr_correlation + prefix_sum[energy_offset + offset + (preamble_index+1) * self.spb] - prefix_sum[energy_offset + offset + (preamble_index) * self.spb]
                 preamble_index = preamble_index + 1
             if curr_correlation > highest_correlation:
                 highest_correlation = curr_correlation
