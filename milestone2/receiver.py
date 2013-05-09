@@ -39,9 +39,12 @@ class Receiver:
         '''
 
         prefix_sum = [0]
+        prefix_sum_squared = [0]
+        
         index = 0
         while index < len(demod_samples):
             prefix_sum.append(prefix_sum[-1] + demod_samples[index])
+            prefix_sum_squared.append(prefix_sum_squared[-1] + demod_samples[index] * demod_samples[index])
             index = index + 1
         
         index = 0
@@ -82,6 +85,7 @@ class Receiver:
                 if preamble[preamble_index] == 1:
                     curr_correlation = curr_correlation + prefix_sum[energy_offset + offset + (preamble_index+1) * self.spb] - prefix_sum[energy_offset + offset + (preamble_index) * self.spb]
                 preamble_index = preamble_index + 1
+            curr_correlation = curr_correlation / ((prefix_sum_squared[energy_offset + offset + preamble_index * self.spb] - prefix_sum_squared[energy_offset + offset]) ** 0.5)
             if curr_correlation > highest_correlation:
                 highest_correlation = curr_correlation
                 best_offset = offset
