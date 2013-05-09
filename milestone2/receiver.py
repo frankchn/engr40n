@@ -40,10 +40,12 @@ class Receiver:
 
         index = 0
         ret = -1
-        while ret != -1 and index + self.spb <= len(demod_samples):
-            average = sum(demod_samples[index:index+spb]) * 1.0 / self.spb
+        while ret == -1 and index + self.spb <= len(demod_samples):
+            average = sum(demod_samples[index:index+self.spb]) * 1.0 / self.spb
             if(average > thresh):
                 ret = index
+            index += 1
+            print "find first sample at", index
         
         energy_offset = ret
         if energy_offset < 0:
@@ -74,6 +76,7 @@ class Receiver:
             if curr_correlation > highest_correlation:
                 highest_correlation = curr_correlation
                 best_offset = offset
+            print "current offset @", offset, "| current correl @", curr_correlation
         
         preamble_offset = best_offset
         
@@ -100,7 +103,7 @@ class Receiver:
         for index, val in enumerate(preamble):
             start_location = preamble_start + self.spb * index + self.spb / 4
             end_location = start_location + 3 * self.spb / 4
-            current_avg = average(demod_samples[start_location : end_location])
+            current_avg = sum(demod_samples[start_location : end_location]) * 1.0 / (self.spb / 2)
             if val == 1:
                 one_sum += current_avg
                 one_cnt += 1
@@ -115,7 +118,7 @@ class Receiver:
         2. Use the average values and bit values of the preamble samples from (1)
            to calculate the new [thresh], [one], [zero]
         '''
-        thresh = (one_avg + zero_avg) / 2.0
+        thresh = (one + zero) / 2.0
 
         '''
         3. Demap the average values from (1) with the new three values from (2)
@@ -125,8 +128,8 @@ class Receiver:
         while offset < len(demod_samples):
             start_location = offset + self.spb / 4
             end_location = offset + 3 * self.spb / 4
-            current_value = average(demod_samples[start_location : end_location]) - zero
-            if current_value > threshold:
+            current_value = sum(demod_samples[start_location : end_location]) * 1.0 / (self.spb / 2) - zero
+            if current_value > thresh:
                 bits.append(1)
             else:
                 bits.append(0)
@@ -138,6 +141,7 @@ class Receiver:
            the preamble. If it is proceed, if not terminate the program. 
         Output is the array of data_bits (bits without preamble)
         '''
+
         for index, val in enumerate(preamble):
             if bits[index] != preamble[index]:
                 print "Cannot detect preamble!"
