@@ -74,7 +74,7 @@ class Receiver:
             while preamble_index < len(preamble):
                 count = 0
                 while count < self.spb:
-                    curr_correlation = curr_correlation + preamble[i] * demod_samples[energy_offset + curr_offset]
+                    curr_correlation = curr_correlation + preamble[preamble_index] * demod_samples[energy_offset + curr_offset]
                     curr_offset = curr_offset + 1
                     count = count + 1
                 preamble_index = preamble_index + 1
