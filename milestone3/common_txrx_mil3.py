@@ -4,19 +4,21 @@ import operator
 
 # Methods common to both the transmitter and receiver
 def modulate(fc, samplerate, samples):
-  print "Modulating with carrier frequency " + str(fc)
+  print " + Modulating with carrier frequency " + str(fc)
   return samples * numpy.cos(carrier_signal(fc, samplerate, len(samples)))
 
 def carrier_signal(fc, samplerate, sz):
   return numpy.arange(0, sz) * fc * 2 * math.pi / samplerate
 
 def demodulate(fc, samplerate, samples):
-  print "Demodulating with carrier frequency " + str(fc)
+  print " + Demodulating with carrier frequency " + str(fc)
   l = samples * numpy.cos(carrier_signal(fc, samplerate, len(samples)))
   Q = samples * -1 * numpy.sin(carrier_signal(fc, samplerate, len(samples)))
 
-  print "Performing low pass filter"
+  print " + Performing low pass filter for real components"
   lp = lpfilter(l, math.pi * fc / samplerate)
+
+  print " + Performing low pass filter for imaginary components"
   lQ = lpfilter(Q, math.pi * fc / samplerate)
 
   out = []
@@ -39,14 +41,18 @@ def lpfilter(samples_in, omega_cut):
       h.append(math.sin(omega_cut * n) / (math.pi * n))
   
   out = []
+
   for n in xrange(0, len(samples_in)):
-    accu = 0
-    for x in xrange(-L, L):
-      ai = n + x - L
-      if(ai < 0 or ai >= n):
-        continue
-      accu += samples_in[ai] * h[x - L]
-    out.append(accu)
+    si_left = max(0, n - L)
+    si_right = min(len(samples_in) - 1, n + L)
+
+    h_left = L - (n - si_left)
+    h_right = L + (si_right - n)
+
+    assert(si_right - si_left == h_right - h_left)
+
+    out.append(numpy.dot(samples_in[si_left:si_right], h[h_left:h_right]))
+
 
   # compute the demodulated samples
   return out

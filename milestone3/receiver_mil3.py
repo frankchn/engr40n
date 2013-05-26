@@ -15,7 +15,7 @@ def detect_threshold(demod_samples):
         # the zeroes and ones. We have decided to avoid that degree of
         # complexity in audiocom (for the time being, anyway).
 
-  print "Detecting threshold with 2-means"
+  print " + Detecting threshold with 2-means"
 
 	# initialization
   center1 = min(demod_samples)
@@ -56,7 +56,7 @@ def detect_threshold(demod_samples):
   print "Threshold for 0:"
   print zero
 
-  thresh = (one - zero) / 2
+  thresh = (one + zero) / 2
 
   # insert code to compute thresh
   return one, zero, thresh
