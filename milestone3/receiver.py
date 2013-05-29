@@ -38,6 +38,8 @@ class Receiver:
         moving average method described in the milestone 2 description.
         '''
 
+        print " + Detecting preamble"
+
         prefix_sum = [0]
         prefix_sum_squared = [0]
         
@@ -92,8 +94,6 @@ class Receiver:
             offset = offset + 1
 
         preamble_offset = best_offset
-
-        print preamble_offset
         
         '''
         [preamble_offset] is the additional amount of offset starting from [offset],
@@ -114,6 +114,8 @@ class Receiver:
         zero_cnt = 0
         one_sum  = 1.0
         one_cnt  = 0
+
+        print " + Demap and check"
 
         for index, val in enumerate(preamble):
             start_location = preamble_start + self.spb * index + self.spb / 4
