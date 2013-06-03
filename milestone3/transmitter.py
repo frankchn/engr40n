@@ -36,11 +36,13 @@ class Transmitter:
         samples = numpy.array([])
 
         for i in range(len(databits_with_preamble)):
-            for j in range(self.spb):
-                if databits_with_preamble[i] == 1:
-                    samples = numpy.append(samples, self.one)
-                else:
-                    samples = numpy.append(samples, 0);
+            if databits_with_preamble[i] == 1:
+                samples = numpy.append(samples, self.one)
+            else:
+                samples = numpy.append(samples, 0.0)
+
+        repeat_times = numpy.repeat(numpy.array([self.spb]), len(databits_with_preamble))
+        samples = numpy.repeat(samples, repeat_times)
 
         return samples
 

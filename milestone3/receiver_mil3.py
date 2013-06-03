@@ -17,26 +17,28 @@ def detect_threshold(demod_samples):
 
   print " + Detecting threshold with 2-means"
 
-	# initialization
   center1 = min(demod_samples)
   center2 = max(demod_samples) 
 
-  # insert code to implement 2-means clustering 	
-  c1f = 0
-  c1c = 0
-  c2f = 0
-  c2c = 0
+	# initialization
+  for iterationCount in xrange(0, 10):
 
-  for x in xrange(0, len(demod_samples)):
-    if(math.fabs(center1 - demod_samples[x]) > math.fabs(center2 - demod_samples[x])):
-      c2f += demod_samples[x]
-      c2c += 1
-    else:
-      c1f += demod_samples[x]
-      c1c += 1
+    # insert code to implement 2-means clustering 	
+    c1f = 0
+    c1c = 0
+    c2f = 0
+    c2c = 0
 
-  center1 = c1f / c1c
-  center2 = c2f / c2c
+    for x in xrange(0, len(demod_samples)):
+      if(math.fabs(center1 - demod_samples[x]) > math.fabs(center2 - demod_samples[x])):
+        c2f += demod_samples[x]
+        c2c += 1
+      else:
+        c1f += demod_samples[x]
+        c1c += 1
+
+    center1 = c1f / c1c
+    center2 = c2f / c2c
 
   one = 0.0
   zero = 0.0
@@ -51,10 +53,8 @@ def detect_threshold(demod_samples):
   # insert code to associate the higher of the two centers 
   # with one and the lower with zero
   
-  print "Threshold for 1:"
-  print one
-  print "Threshold for 0:"
-  print zero
+  print " + Threshold for 1: " + str(one)
+  print " + Threshold for 0: " + str(zero)
 
   thresh = (one + zero) / 2
 
