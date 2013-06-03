@@ -13,7 +13,7 @@ def carrier_signal(fc, samplerate, sz):
 def demodulate(fc, samplerate, samples):
   print " + Demodulating with carrier frequency " + str(fc)
   l = samples * numpy.cos(carrier_signal(fc, samplerate, len(samples)))
-  Q = samples * -1 * numpy.sin(carrier_signal(fc, samplerate, len(samples)))
+  Q = samples * numpy.sin(carrier_signal(fc, samplerate, len(samples))) * -1
 
   print " + Performing low pass filter for real components"
   lp = lpfilter(l, math.pi * fc / samplerate)
