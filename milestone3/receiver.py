@@ -70,7 +70,7 @@ class Receiver:
         '''
         # Fill in your implementation of the cross-correlation check procedure
         
-        preamble = [1, 0, 1, 1, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 1, 0, 1];
+        preamble = [1,1,1,1,1,0,1,1,1,1,0,0,1,1,1,0,1,0,1,1,0,0,0,0,1,0,1,1,1,0,0,0,1,1,0,1,1,0,1,0,0,1,0,0,0,1,0,0,1,1,0,0,1,0,1,0,1,0,0,0,0,0,0];
         
         best_offset = 0
         highest_correlation = -1000
@@ -104,7 +104,7 @@ class Receiver:
         return energy_offset + preamble_offset
         
     def demap_and_check(self, demod_samples, preamble_start):
-        preamble = [1, 0, 1, 1, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 1, 1, 0, 1, 0, 1];
+        preamble = [1,1,1,1,1,0,1,1,1,1,0,0,1,1,1,0,1,0,1,1,0,0,0,0,1,0,1,1,1,0,0,0,1,1,0,1,1,0,1,0,0,1,0,0,0,1,0,0,1,1,0,0,1,0,1,0,1,0,0,0,0,0,0]
         '''
         Demap the demod_samples (starting from [preamble_start]) into bits.
         1. Calculate the average values of midpoints of each [spb] samples
@@ -156,12 +156,8 @@ class Receiver:
         4. Check whether the first [preamble_length] bits of (3) are equal to
            the preamble. If it is proceed, if not terminate the program. 
         Output is the array of data_bits (bits without preamble)
+		THIS HAS BEEN REMOVED BY REQUEST OF MILESTONE
         '''
-
-        for index, val in enumerate(preamble):
-            if bits[index] != preamble[index]:
-                print "Cannot detect preamble!"
-                sys.exit()
 
         return bits[len(preamble):]
 

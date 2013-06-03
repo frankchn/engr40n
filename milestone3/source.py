@@ -8,6 +8,14 @@ import random
 import os
 import itertools
 
+class HammingNode:
+    def __init__(self, valueIn, countIn, leftIn = None, rightIn = None):
+        self.value = valueIn
+        self.count = countIn
+        self.left = leftIn
+        self.right = rightIn
+    
+
 class Source:
     def __init__(self, monotone, filename=None):
         # The initialization procedure of source object
@@ -41,6 +49,8 @@ class Source:
         header = self.get_header(content_len, content_type)
         databits = header + payload
 
+        (a, b) = self.huffman_encode(databits)
+        
         return payload, databits
 
     def filesize(self, filename):
@@ -67,3 +77,13 @@ class Source:
                   'image':    [0,1] + self.num2bits(payload_length),
                   'monotone': [1,0] + self.num2bits(payload_length)
                }[srctype]
+               
+    def huffman_encode(self, src_bits):
+        data_stats = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+        i = 0
+        while i < len(src_bits):
+            count = (src_bits[i] << 3) | (src_bits[i+1] << 2) | (src_bits[i+2] << 1) | (src_bits[i+3])
+            data_stats[count] = data_stats[count] + 1
+            i = i + 4
+        huffman_encode = []
+        return data_stats, huffman_encode
