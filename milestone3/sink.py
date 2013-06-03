@@ -27,11 +27,17 @@ class Sink:
         # If its a text, just print out the text
 
         rcd_payload = None
-        header = recd_bits[:32]
+        header = recd_bits[:18]
 
-        srctype, payload_length = self.read_header(header)
-        payload = recd_bits[32:(32 + payload_length * 8)]
-
+        srctype, payload_length = self.read_type_size(header)
+        to_decrypt = None
+        if srctype == 'monotone':
+            to_decrypt = recd_bits[18:(18 + payload_length * 8)]
+        else:
+            to_decrypt = recd_bits[178:(178 + payload_length * 8)]
+        
+        payload = huffman_decode(to_decrypt)
+            
         if srctype == 'text':
             print self.bits2text(payload)
         elif srctype == 'image':
@@ -73,35 +79,35 @@ class Sink:
         print '\tLength from header: ', payload_length
         print '\tSource type: ', srctype
         return srctype, payload_length
-		
-	def read_stat(self, header_bits):
-		data_stats = []
-		i = 0
-		while i < 16:
-			count = 0;
-			j = 0
-			while j < 10:
-				count = count + (header_bits[18+i+j] << (9-j))
-				j = j+1
-			data_stats.append(count)
-			i = i+1
-		return data_stats
-		
-	def huffman_decode(data_stats, huffman_encode):
-		source_bits = []
-		root = common.get_hamming_tree(data_stats)
-		curr = root
-		i = 0
-		path = []
-		while i < len(huffman_encode):
-			if curr.value >= 0:
-				source_bits = source_bits + path
-				path = []
-			if huffman_encode[i] == 0:
-				path.append(0)
-				curr = curr.left
-			else:
-				path.append(1)
-				curr = curr.right
-		source_bits = source_bits + path
-		return source_bits
+        
+    def read_stat(self, header_bits):
+        data_stats = []
+        i = 0
+        while i < 16:
+            count = 0;
+            j = 0
+            while j < 10:
+                count = count + (header_bits[18+i+j] << (9-j))
+                j = j+1
+            data_stats.append(count)
+            i = i+1
+        return data_stats
+        
+    def huffman_decode(data_stats, huffman_encode):
+        source_bits = []
+        root = common.get_hamming_tree(data_stats)
+        curr = root
+        i = 0
+        path = []
+        while i < len(huffman_encode):
+            if curr.value >= 0:
+                source_bits = source_bits + path
+                path = []
+            if huffman_encode[i] == 0:
+                path.append(0)
+                curr = curr.left
+            else:
+                path.append(1)
+                curr = curr.right
+        source_bits = source_bits + path
+        return source_bits

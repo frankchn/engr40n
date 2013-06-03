@@ -50,7 +50,7 @@ class Source:
         return os.path.getsize(filename)
 
     def num2bits(self, n):
-        return [ int(z) for z in bin(n)[2:].zfill(10) ][:10]
+        return [ int(z) for z in bin(n)[2:].zfill(16) ][:16]
 
     def text2bits(self, filename):
         with open(filename, "r") as myfile:
