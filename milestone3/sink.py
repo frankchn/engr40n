@@ -35,8 +35,9 @@ class Sink:
             to_decrypt = recd_bits[18:(18 + payload_length * 8)]
         else:
             to_decrypt = recd_bits[178:(178 + payload_length * 8)]
+            data_stats = self.read_stat(recd_bits[18:178])
         
-        payload = huffman_decode(to_decrypt)
+        payload = self.huffman_decode(to_decrypt)
             
         if srctype == 'text':
             print self.bits2text(payload)
@@ -44,7 +45,7 @@ class Sink:
             self.image_from_bits(payload, '')
         
         # Return the received payload for comparison purposes
-        return payload
+        return to_decrypt
 
     def bits2text(self, bits):
         string_bits = [str(i) for i in bits]
