@@ -58,10 +58,7 @@ class Sink:
             f.write(v)
         pass 
 
-    def read_header(self, header_bits): 
-        # Given the header bits, compute the payload length
-        # and source type (compatible with get_header on source)
-
+    def read_type_size(self, header_bits): 
         string_bits = [str(i) for i in header_bits]
 
         payload_length = int(''.join(string_bits[2:]), 2)
@@ -76,3 +73,16 @@ class Sink:
         print '\tLength from header: ', payload_length
         print '\tSource type: ', srctype
         return srctype, payload_length
+		
+	def read_stat(self, header_bits):
+		data_stats = []
+		i = 0
+		while i < 16:
+			count = 0;
+			j = 0
+			while j < 10:
+				count = count + (header_bits[18+i+j] << (9-j))
+				j = j+1
+			data_stats.append(count)
+			i = i+1
+		return data_stats

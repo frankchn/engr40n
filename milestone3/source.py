@@ -8,14 +8,6 @@ import random
 import os
 import itertools
 
-class HammingNode:
-    def __init__(self, valueIn, countIn, leftIn = None, rightIn = None):
-        self.value = valueIn
-        self.count = countIn
-        self.left = leftIn
-        self.right = rightIn
-    
-
 class Source:
     def __init__(self, monotone, filename=None):
         # The initialization procedure of source object
@@ -58,7 +50,7 @@ class Source:
         return os.path.getsize(filename)
 
     def num2bits(self, n):
-        return [ int(z) for z in bin(n)[2:].zfill(30) ][:30]
+        return [ int(z) for z in bin(n)[2:].zfill(10) ][:10]
 
     def text2bits(self, filename):
         with open(filename, "r") as myfile:
@@ -96,43 +88,6 @@ class Source:
             count = (src_bits[i] << 3) | (src_bits[i+1] << 2) | (src_bits[i+2] << 1) | (src_bits[i+3])
             data_stats[count] = data_stats[count] + 1
             i = i + 4
-        nodes = []
-        i = 0
-        while i < 16:
-            if data_stats[i] > 0:
-                node = HammingNode(i, data_stats[i])
-                nodes.append(node)
-            i = i+1
-        while len(nodes) > 1:
-            left_node = None
-            right_node = None
-            left_index = -1
-            right_index = -1
-            i = 0
-            while i < len(nodes):
-                if left_node == None:
-                    left_node = nodes[i]
-                    left_index = i
-                elif nodes[i].count < left_node.count:
-                    right_node = left_node
-                    right_index = left_index
-                    left_node = nodes[i]
-                    left_index = i
-                elif right_node == None:
-                    right_node = nodes[i]
-                    right_index = i
-                elif nodes[i].count < right_node.count:
-                    right_node = nodes[i]
-                    right_index = i
-                i = i+1
-            new_node = HammingNode(-1, left_node.count + right_node.count, left_node, right_node)
-            if left_index < right_index:
-                nodes.pop(right_index)
-                nodes.pop(left_index)
-            else:
-                nodes.pop(left_index)
-                nodes.pop(right_index)
-            nodes.append(new_node)
         huffman_encode = []
         encodings = []
         i = 0
@@ -140,7 +95,7 @@ class Source:
             encodings.append([])
             i = i+1
         queue = []
-        queue.append((nodes[0], []))
+        queue.append((common.get_hamming_tree(data_stats), []))
         while len(queue) > 0:
             state = queue.pop(0)
             curr_node = state[0]
