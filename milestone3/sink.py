@@ -1,6 +1,6 @@
 # FRANK CHEN + NICK WU
 # audiocom library: Source and sink functions
-import common_srcsink
+import common_srcsink as common
 import Image
 from graphs import *
 import binascii
@@ -86,3 +86,22 @@ class Sink:
 			data_stats.append(count)
 			i = i+1
 		return data_stats
+		
+	def huffman_decode(data_stats, huffman_encode):
+		source_bits = []
+		root = common.get_hamming_tree(data_stats)
+		curr = root
+		i = 0
+		path = []
+		while i < len(huffman_encode):
+			if curr.value >= 0:
+				source_bits = source_bits + path
+				path = []
+			if huffman_encode[i] == 0:
+				path.append(0)
+				curr = curr.left
+			else:
+				path.append(1)
+				curr = curr.right
+		source_bits = source_bits + path
+		return source_bits
