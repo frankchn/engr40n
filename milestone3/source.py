@@ -46,10 +46,11 @@ class Source:
             content_type = 'monotone'
             content_len = self.monotone
 
-        header = self.get_header(content_len, content_type)
-        databits = header + payload
-
-        (a, b) = self.huffman_encode(databits)
+        (data_stats, huffman_encode) = self.huffman_encode(payload) 
+            
+        header = self.get_header(content_type, len(huffman_encode), data_stats)
+            
+        databits = header + huffman_encode
         
         return payload, databits
 
@@ -69,14 +70,24 @@ class Source:
             data = myfile.read()
         return [int(j) for j in list(itertools.chain(*[list('%08d' % int(bin(ord(i))[2:])) for i in data]))]
 
-    def get_header(self, payload_length, srctype): 
-        # Given the payload length and the type of source 
-        # (image, text, monotone), form the header
-        return {
-                  'text':     [0,0] + self.num2bits(payload_length),
-                  'image':    [0,1] + self.num2bits(payload_length),
-                  'monotone': [1,0] + self.num2bits(payload_length)
-               }[srctype]
+    def get_header(self, srctype, payload_length, data_stats): 
+        if srctype == 'monotone':
+            return [1,0] + self.num2bits(payload_length)
+        if srctype == 'text':
+            header = [0,0] + self.num2bits(payload_length)
+        else:
+            header = [0,1] + self.num2bits(payload_length)
+        i = 0
+        while i < 16:
+            temp = [0,0,0,0,0,0,0,0,0,0]
+            j = 0
+            while j < 10:
+                if (data_stats[i] & (1 << j)) != 0:
+                    temp[9-j] = 1
+                j = j+1
+            i = i+1
+            header = header + temp
+        return header
                
     def huffman_encode(self, src_bits):
         data_stats = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
@@ -85,5 +96,78 @@ class Source:
             count = (src_bits[i] << 3) | (src_bits[i+1] << 2) | (src_bits[i+2] << 1) | (src_bits[i+3])
             data_stats[count] = data_stats[count] + 1
             i = i + 4
+        nodes = []
+        i = 0
+        while i < 16:
+            if data_stats[i] > 0:
+                node = HammingNode(i, data_stats[i])
+                nodes.append(node)
+            i = i+1
+        while len(nodes) > 1:
+            left_node = None
+            right_node = None
+            left_index = -1
+            right_index = -1
+            i = 0
+            while i < len(nodes):
+                if left_node == None:
+                    left_node = nodes[i]
+                    left_index = i
+                elif nodes[i].count < left_node.count:
+                    right_node = left_node
+                    right_index = left_index
+                    left_node = nodes[i]
+                    left_index = i
+                elif right_node == None:
+                    right_node = nodes[i]
+                    right_index = i
+                elif nodes[i].count < right_node.count:
+                    right_node = nodes[i]
+                    right_index = i
+                i = i+1
+            new_node = HammingNode(-1, left_node.count + right_node.count, left_node, right_node)
+            if left_index < right_index:
+                nodes.pop(right_index)
+                nodes.pop(left_index)
+            else:
+                nodes.pop(left_index)
+                nodes.pop(right_index)
+            nodes.append(new_node)
         huffman_encode = []
+        encodings = []
+        i = 0
+        while i < 16:
+            encodings.append([])
+            i = i+1
+        queue = []
+        queue.append((nodes[0], []))
+        while len(queue) > 0:
+            state = queue.pop(0)
+            curr_node = state[0]
+            path = state[1]
+            if curr_node.value >= 0:
+                encodings[curr_node.value] = path
+            else:
+                left_path = []
+                j = 0
+                while j < len(path):
+                    left_path.append(path[j])
+                    j = j+1
+                left_path.append(0)
+                queue.append((curr_node.left, left_path))
+                right_path = []
+                j = 0
+                while j < len(path):
+                    right_path.append(path[j])
+                    j = j+1
+                right_path.append(1)
+                queue.append((curr_node.right, right_path))
+        i = 0
+        while i < len(src_bits):
+            curr = (src_bits[i] << 3) | (src_bits[i+1] << 2) | (src_bits[i+2] << 1) | (src_bits[i+3])
+            j = 0
+            while j < len(encodings[curr]):
+                huffman_encode.append(encodings[curr][j])
+                j = j+1
+            i = i + 4
         return data_stats, huffman_encode
