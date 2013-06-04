@@ -25,19 +25,18 @@ class Sink:
         
         # If its an image, save it as "rcd-image.png"
         # If its a text, just print out the text
-
+        
         rcd_payload = None
-        header = recd_bits[:18]
+        header = recd_bits[:32]
 
         srctype, payload_length = self.read_type_size(header)
         to_decrypt = None
         if srctype == 'monotone':
-            to_decrypt = recd_bits[18:(18 + payload_length * 8)]
+            to_decrypt = recd_bits[32:(32 + payload_length * 8)]
         else:
-            to_decrypt = recd_bits[178:(178 + payload_length * 8)]
-            data_stats = self.read_stat(recd_bits[18:178])
-        
-        payload = self.huffman_decode(to_decrypt)
+            to_decrypt = recd_bits[192:(192 + payload_length * 8)]
+            data_stats = self.read_stat(recd_bits[32:192])
+            payload = self.huffman_decode(data_stats, to_decrypt)
             
         if srctype == 'text':
             print self.bits2text(payload)
@@ -94,7 +93,7 @@ class Sink:
             i = i+1
         return data_stats
         
-    def huffman_decode(data_stats, huffman_encode):
+    def huffman_decode(self, data_stats, huffman_encode):
         source_bits = []
         root = common.get_hamming_tree(data_stats)
         curr = root

@@ -38,11 +38,15 @@ class Source:
             content_type = 'monotone'
             content_len = self.monotone
 
-        (data_stats, huffman_encode) = self.huffman_encode(payload) 
-            
-        header = self.get_header(content_type, len(huffman_encode), data_stats)
-            
-        databits = header + huffman_encode
+        if content_type == 'monotone':
+            header = self.get_header(content_type, content_len, None)
+            print header
+            databits = header + payload
+        
+        else:
+            (data_stats, huffman_encode) = self.huffman_encode(payload) 
+            header = self.get_header(content_type, len(huffman_encode), data_stats)
+            databits = header + huffman_encode
         
         return payload, databits
 
@@ -50,7 +54,7 @@ class Source:
         return os.path.getsize(filename)
 
     def num2bits(self, n):
-        return [ int(z) for z in bin(n)[2:].zfill(16) ][:16]
+        return [ int(z) for z in bin(n)[2:].zfill(30) ][:30]
 
     def text2bits(self, filename):
         with open(filename, "r") as myfile:
@@ -102,6 +106,9 @@ class Source:
             path = state[1]
             if curr_node.value >= 0:
                 encodings[curr_node.value] = path
+                print "assign"
+                print curr_node.value
+                print path
             else:
                 left_path = []
                 j = 0
