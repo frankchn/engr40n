@@ -106,7 +106,7 @@ class Source:
             path = state[1]
             if curr_node.value >= 0:
                 encodings[curr_node.value] = path
-                print "assign " + str(curr_node.value) + " to " + str(path)
+                print " > assign " + str(curr_node.value) + " to " + str(path)
             else:
                 left_path = []
                 j = 0
