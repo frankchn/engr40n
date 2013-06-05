@@ -77,15 +77,18 @@ def gen_lookup(cc_len):
     
     # Reshape G:
 
-    G = arange(n*k).reshape(k,n)
+    G = numpy.arange(n*k).reshape(k,n)
     i = 0
+
     while i < k:
         j = 0
         while j < k:
             G[i][j] = generating_matrices[index][i][j+n-k]
             j = j+1
         i = i+1
+
     i = 0
+
     while i < k:
         j = k
         while j < n:
@@ -113,7 +116,7 @@ def parity_lookup(index):
     
     # Reshape G, extract A and compute H:
 
-    G = arange(n*k).reshape(k,n)
+    G = numpy.arange(n*k).reshape(k,n)
     i = 0
     while i < k:
         j = 0
@@ -129,7 +132,7 @@ def parity_lookup(index):
             j = j+1
         i = i+1
     
-    H = arange(n*(n-k)).reshape(n-k,n)
+    H = numpy.arange(n*(n-k)).reshape(n-k,n)
     i = 0
     while i < n-k:
         j = 0
@@ -138,7 +141,7 @@ def parity_lookup(index):
             j = j+1
         while j < n:
             H[i][j] = 0
-            if i == j-k
+            if i == j-k:
                 H[i][j] = 1
             j = j+1
         i = i+1
