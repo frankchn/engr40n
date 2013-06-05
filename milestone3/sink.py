@@ -33,6 +33,7 @@ class Sink:
         to_decrypt = None
         if srctype == 'monotone':
             to_decrypt = recd_bits[32:(32 + payload_length * 8)]
+            payload = to_decrypt
         else:
             to_decrypt = recd_bits[192:(192 + payload_length * 8)]
             data_stats = self.read_stat(recd_bits[32:192])
@@ -44,7 +45,7 @@ class Sink:
             self.image_from_bits(payload, '')
         
         # Return the received payload for comparison purposes
-        return to_decrypt
+        return payload
 
     def bits2text(self, bits):
         string_bits = [str(i) for i in bits]
