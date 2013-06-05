@@ -103,11 +103,13 @@ class Sink:
             if curr.value >= 0:
                 source_bits = source_bits + path
                 path = []
+                curr = root
             if huffman_encode[i] == 0:
                 path.append(0)
                 curr = curr.left
             else:
                 path.append(1)
                 curr = curr.right
+            i = i+1
         source_bits = source_bits + path
         return source_bits
