@@ -92,6 +92,7 @@ class Sink:
                 j = j+1
             data_stats.append(count)
             i = i+1
+
         return data_stats
         
     def huffman_decode(self, data_stats, huffman_encode):

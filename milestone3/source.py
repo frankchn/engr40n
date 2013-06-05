@@ -7,6 +7,7 @@ import binascii
 import random
 import os
 import itertools
+from heapq import *
 
 class Source:
     def __init__(self, monotone, filename=None):
@@ -85,12 +86,32 @@ class Source:
         return header
                
     def huffman_encode(self, src_bits):
-        data_stats = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+        raw_data_stats = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
         i = 0
         while i < len(src_bits):
             count = (src_bits[i] << 3) | (src_bits[i+1] << 2) | (src_bits[i+2] << 1) | (src_bits[i+3])
-            data_stats[count] = data_stats[count] + 1
+            raw_data_stats[count] = raw_data_stats[count] + 1
             i = i + 4
+
+        # reduce the counts into the k-th order statistic
+        final_stats = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+        h = []
+        for i in xrange(0, 16):
+            heappush(h, (raw_data_stats[i], i))
+
+        last_val = 0
+        last_count = 0
+        for i in xrange(0, 16):
+            (cnt, index) = heappop(h)
+            if cnt == 0:
+                continue
+            if cnt > last_count:
+                last_val += 1
+                last_count = cnt
+            final_stats[index] = last_val
+
+        data_stats = final_stats
+
         huffman_encode = []
         encodings = []
         i = 0
@@ -128,4 +149,8 @@ class Source:
                 huffman_encode.append(encodings[curr][j])
                 j = j+1
             i = i + 4
+
+        print data_stats
+        print final_stats
+
         return data_stats, huffman_encode

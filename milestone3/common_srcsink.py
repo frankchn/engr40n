@@ -2,6 +2,7 @@
 import numpy
 import math
 import operator
+from heapq import *
 
 class HammingNode:
     def __init__(self, valueIn, countIn, leftIn = None, rightIn = None):
@@ -36,6 +37,7 @@ def get_hamming_tree(data_stats):
             node = HammingNode(i, data_stats[i])
             nodes.append(node)
         i = i+1
+
     while len(nodes) > 1:
         left_node = None
         right_node = None
