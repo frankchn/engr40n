@@ -20,6 +20,12 @@ class Receiver:
         self.spb = spb 
         print 'Receiver: '
 
+    def decode(self, rcd_bits):
+        return rcd_bits
+
+    def hamming_decoding(self, coded_bits, index):
+        pass
+
     def detect_threshold(self, demod_samples):
         '''
         Calls the detect_threshold function in another module.

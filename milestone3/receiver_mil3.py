@@ -21,7 +21,7 @@ def detect_threshold(demod_samples):
   center2 = max(demod_samples) 
 
 	# initialization
-  for iterationCount in xrange(0, 10):
+  for iterationCount in xrange(0, 5):
 
     # insert code to implement 2-means clustering 	
     c1f = 0
