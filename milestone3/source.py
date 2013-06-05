@@ -150,7 +150,4 @@ class Source:
                 j = j+1
             i = i + 4
 
-        print data_stats
-        print final_stats
-
         return data_stats, huffman_encode
