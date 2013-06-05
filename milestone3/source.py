@@ -40,7 +40,6 @@ class Source:
 
         if content_type == 'monotone':
             header = self.get_header(content_type, content_len, None)
-            print header
             databits = header + payload
         
         else:
@@ -106,7 +105,6 @@ class Source:
             path = state[1]
             if curr_node.value >= 0:
                 encodings[curr_node.value] = path
-                print " > assign " + str(curr_node.value) + " to " + str(path)
             else:
                 left_path = []
                 j = 0

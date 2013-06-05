@@ -87,7 +87,7 @@ class Sink:
             count = 0;
             j = 0
             while j < 10:
-                count = count + (header_bits[18+i+j] << (9-j))
+                count = count + (header_bits[10*i+j] << (9-j))
                 j = j+1
             data_stats.append(count)
             i = i+1
@@ -98,18 +98,20 @@ class Sink:
         root = common.get_hamming_tree(data_stats)
         curr = root
         i = 0
-        path = []
-        while i < len(huffman_encode):
+        while i <= len(huffman_encode):
             if curr.value >= 0:
-                source_bits = source_bits + path
-                path = []
+                j = 3
+                while j >= 0:
+                    if (curr.value & (1 << j)) != 0:
+                        source_bits.append(1)
+                    else:
+                        source_bits.append(0)
+                    j = j-1
                 curr = root
-            if huffman_encode[i] == 0:
-                path.append(0)
-                curr = curr.left
-            else:
-                path.append(1)
-                curr = curr.right
+            if i < len(huffman_encode):
+                if huffman_encode[i] == 0:
+                    curr = curr.left
+                else:
+                    curr = curr.right
             i = i+1
-        source_bits = source_bits + path
         return source_bits
