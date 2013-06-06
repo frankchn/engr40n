@@ -29,12 +29,19 @@ class Receiver:
         header = rcd_bits[0:96]
         body = rcd_bits[96:]
 
-        header_decoded = self.hamming_decoding(header, 0)
-        payload_length = int(''.join(map(str, header_decoded[2:])), 2)
+        (header_decoded, header_errors) = self.hamming_decoding(header, 0)
 
-        body_decoded = self.hamming_decoding(body, header_decoded[0] * 2 + header_decoded[1])
+        index = header_decoded[0] * 2 + header_decoded[1]
+        
+        payload_length = int(''.join(map(str, header_decoded[2:])), 2)
+        
+        print "channel coding rate: " + str((float(parameters[index][1]) / parameters[index][0])) 
+        
+        (body_decoded, body_errors) = self.hamming_decoding(body, index)
         body_decoded = body_decoded[:payload_length]
 
+        print "errors corrected: " + str(header_errors + body_errors)
+        
         return body_decoded
 
     def hamming_decoding(self, coded_bits, index):
@@ -42,6 +49,9 @@ class Receiver:
         num_columns = len(H[0])
         
         correct_masks = []
+        
+        total = 0
+        errors_corrected = 0
         
         j = 0
         while j < num_columns:
@@ -57,6 +67,7 @@ class Receiver:
         decoded_bits = []
         i = 0
         while i + n <= len(coded_bits):
+            total = total + 1
             temp = numpy.arange(n).reshape(n,1)
             j = 0
             while j < n:
@@ -77,7 +88,7 @@ class Receiver:
             if syndrome_value == 0:
                 j = 0
                 while j < k:
-                    decoded_bits.append(coded_bits[i+j])
+                    decoded_bits.append(temp[j][0])
                     j = j + 1
             else:
                 j = 0
@@ -89,13 +100,15 @@ class Receiver:
                     exit(-1)
                 a = 0
                 while a < k:
-                    bit = coded_bits[i+a]
+                    bit = temp[a][0]
                     if a == j:
                         bit = (bit+1)%2
+                        errors_corrected = errors_corrected + 1
                     decoded_bits.append(bit)
                     a = a+1
             i = i+n
-        return decoded_bits
+        
+        return decoded_bits, errors_corrected
 
     def detect_threshold(self, demod_samples):
         '''
