@@ -32,7 +32,7 @@ class Transmitter:
 
         header_start.append(self.num2bits(length))
 
-        return header_start
+        return [val for subl in header_start for val in subl]
 
     def encode(self, databits):
         if self.hamming_length == 0:
