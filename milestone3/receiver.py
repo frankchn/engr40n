@@ -35,12 +35,12 @@ class Receiver:
         
         payload_length = int(''.join(map(str, header_decoded[2:])), 2)
         
-        print "channel coding rate: " + str((float(parameters[index][1]) / parameters[index][0])) 
+        print " ! Channel Coding Rate:" , (float(parameters[index][1]) / parameters[index][0])
         
         (body_decoded, body_errors) = self.hamming_decoding(body, index)
         body_decoded = body_decoded[:payload_length]
 
-        print "errors corrected: " + str(header_errors + body_errors)
+        print " ! Errors Corrected:" , (header_errors + body_errors)
         
         return body_decoded
 

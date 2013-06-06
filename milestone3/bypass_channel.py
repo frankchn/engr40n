@@ -16,4 +16,7 @@ class BypassChannel:
         # add lag
         lag_samples = numpy.append([0]*self.lag, conv_samples)  
         # add Gaussian noise
-        return lag_samples + numpy.random.normal(0.0, math.sqrt(self.noise), len(lag_samples))
+        if(self.noise > 0.0):
+            return lag_samples + numpy.random.normal(0.0, math.sqrt(self.noise), len(lag_samples))
+        else:
+            return lag_samples
