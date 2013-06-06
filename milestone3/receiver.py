@@ -30,10 +30,15 @@ class Receiver:
         body = rcd_bits[96:]
 
         header_decoded = self.hamming_decoding(header, 0)
+
         '''
         Currently does not prune based on payload length.
         '''
+        payload_length = int(''.join(map(str, header_decoded[2:])), 2)
+
         body_decoded = self.hamming_decoding(body, header[0] * 2 + header[1])
+        body_decoded = body_decoded[:payload_length]
+
         return body_decoded
 
     def hamming_decoding(self, coded_bits, index):
