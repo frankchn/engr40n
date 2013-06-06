@@ -5,9 +5,10 @@ import scipy.cluster.vq
 import common_txrx as common
 from numpy import linalg as LA
 import receiver_mil3
+from hamming_db import *
 
 class Receiver:
-    def __init__(self, carrier_freq, samplerate, spb):
+    def __init__(self, carrier_freq, samplerate, spb, hamming_on = 0):
         '''
         The physical-layer receive function, which processes the
         received samples by detecting the preamble and then
@@ -18,13 +19,25 @@ class Receiver:
         self.fc = carrier_freq
         self.samplerate = samplerate
         self.spb = spb 
+        self.hamming_on = hamming_on
         print 'Receiver: '
 
     def decode(self, rcd_bits):
-        return rcd_bits
+        if self.hamming_on == 0:
+            return rcd_bits
+
+        header = rcd_bits[0:96]
+        body = rcd_bits[96:]
+
+        header_decoded = self.hamming_decoding(header, 1)
 
     def hamming_decoding(self, coded_bits, index):
-        pass
+        (n, k, H) = parity_lookup(index)
+
+        print H
+        sys.exit(1)
+
+        return []
 
     def detect_threshold(self, demod_samples):
         '''

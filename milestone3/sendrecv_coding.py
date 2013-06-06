@@ -126,7 +126,7 @@ if __name__ == '__main__':
 
     # process the received samples
     # make receiver
-    r = Receiver(fc, opt.samplerate, opt.spb)
+    r = Receiver(fc, opt.samplerate, opt.spb, 1)
     demod_samples = r.demodulate(samples_rx)
     one, zero, thresh = r.detect_threshold(demod_samples)
     barker_start = r.detect_preamble(demod_samples, thresh, one)

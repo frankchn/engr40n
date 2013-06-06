@@ -13,37 +13,62 @@ class Transmitter:
         self.hamming_length = hamming_length
         print 'Transmitter: '
     
-    def get_header(self):
+    def num2bits(self, n):
+        return [ int(z) for z in bin(n)[2:].zfill(30) ][:30]
+
+    def get_header(self, length):
+        header_start = []
         if self.hamming_length == 3:
-            return [0,0]
+            header_start.append([0,0])
         elif self.hamming_length == 7:
-            return [0,self.one]
+            header_start.append([0,self.one])
         elif self.hamming_length == 15:
-            return [self.one,0]
+            header_start.append([self.one,0])
         elif self.hamming_length == 31:
-            return [self.one,self.one]
+            header_start.append([self.one,self.one])
         else:
             print '\tNo Hamming code with n =', cc_len
             sys.exit(1)
+
+        header_start.append(self.num2bits(length))
+
+        return header_start
 
     def encode(self, databits):
         if self.hamming_length == 0:
             return databits
 
-        header = self.get_header()
-        self.hamming_encoding(header, 1)
+        header = self.get_header(len(databits))
+        header_output = self.hamming_encoding(header, 1)
 
-        return databits
+        data_output = self.hamming_encoding(databits, 0)
+
+        return list(numpy.append(header_output, data_output))
 
     def hamming_encoding(self, databits, is_header):
         hamming_len = self.hamming_length
         if is_header > 0:
-            hamming_len = 31
+            hamming_len = 3
 
         (n, k, index, G) = gen_lookup(hamming_len)
-        print G
+        i = 0
+        x = 0
 
-        pass
+        output = numpy.array([])
+        output.resize(math.ceil((len(databits) * 1.0) / (k * 1.0)) * n)
+
+        while i < len(databits):
+            data_chunk = numpy.array(databits[i:i+k])
+            data_chunk.resize(k)
+            coded_chunk = numpy.dot(data_chunk, G)
+            
+            for z in xrange(0, n):
+                output[x] = coded_chunk[z]
+                x += 1
+
+            i += k
+
+        return output
 
     def add_preamble(self, databits):
         '''
