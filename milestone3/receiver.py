@@ -29,7 +29,7 @@ class Receiver:
         header = rcd_bits[0:96]
         body = rcd_bits[96:]
 
-        header_decoded = self.hamming_decoding(header, 2)
+        header_decoded = self.hamming_decoding(header, 0)
         '''
         Currently does not prune based on payload length.
         '''
@@ -38,9 +38,6 @@ class Receiver:
 
     def hamming_decoding(self, coded_bits, index):
         (n, k, H) = parity_lookup(index)
-
-        print H
-        
         num_columns = len(H[0])
         
         correct_masks = []
@@ -97,7 +94,6 @@ class Receiver:
                     decoded_bits.append(bit)
                     a = a+1
             i = i+n
-
         return decoded_bits
 
     def detect_threshold(self, demod_samples):
@@ -152,7 +148,7 @@ class Receiver:
         '''
         # Fill in your implementation of the cross-correlation check procedure
         
-        preamble = [1,1,1,1,1,0,1,1,1,1,0,0,1,1,1,0,1,0,1,1,0,0,0,0,1,0,1,1,1,0,0,0,1,1,0,1,1,0,1,0,0,1,0,0,0,1,0,0,1,1,0,0,1,0,1,0,1,0,0,0,0,0,0];
+        preamble = [1,1,1,1,1,0,1,1,1,1,0,0,1,1,1,0,1,0,1,1,0,0,0,0,1,0,1,1,1,0,0,0,1,1,0,1,1,0,1,0,0,1,0,0,0,1,0,0,1,1,0,0,1,0,1,0,1,0,0,0,0,0,0]
         
         best_offset = 0
         highest_correlation = -1000
