@@ -1,8 +1,7 @@
 import math
 import common_txrx as common
 import numpy
-from hamming_db import gen_lookup
-from hamming_db import parity_lookup
+from hamming_db import *
 
 class Transmitter:
     def __init__(self, carrier_freq, samplerate, one, spb, silence, hamming_length = 0):

@@ -83,7 +83,8 @@ def gen_lookup(cc_len):
     while i < k:
         j = 0
         while j < k:
-            G[i][j] = generating_matrices[index][i][j+n-k]
+            G[i][j] = generating_matrices[index][i * cc_len + (j+n-k)]
+            #G[i][j] = generating_matrices[index][i][j+n-k]
             j = j+1
         i = i+1
 
@@ -92,7 +93,8 @@ def gen_lookup(cc_len):
     while i < k:
         j = k
         while j < n:
-            G[i][j] = generating_matrices[index][i][j-k]
+            G[i][j] = generating_matrices[index][i * cc_len + (j-k)]
+            #G[i][j] = generating_matrices[index][i][j-k]
             j = j+1
         i = i+1
     

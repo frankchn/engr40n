@@ -8,6 +8,7 @@ import random
 import os
 import itertools
 from heapq import *
+import math
 
 class Source:
     def __init__(self, monotone, filename=None):
@@ -95,20 +96,10 @@ class Source:
 
         # reduce the counts into the k-th order statistic
         final_stats = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
-        h = []
-        for i in xrange(0, 16):
-            heappush(h, (raw_data_stats[i], i))
 
-        last_val = 0
-        last_count = 0
         for i in xrange(0, 16):
-            (cnt, index) = heappop(h)
-            if cnt == 0:
-                continue
-            if cnt > last_count:
-                last_val += 1
-                last_count = cnt
-            final_stats[index] = last_val
+            final_stats[i] = int(math.floor((raw_data_stats[i] * 1.0) / (max(raw_data_stats) * 1.0) * 1023))
+            print final_stats[i]
 
         data_stats = final_stats
 
