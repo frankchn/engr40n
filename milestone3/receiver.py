@@ -29,7 +29,7 @@ class Receiver:
         header = rcd_bits[0:96]
         body = rcd_bits[96:]
 
-        header_decoded = self.hamming_decoding(header, 1)
+        header_decoded = self.hamming_decoding(header, 2)
 
     def hamming_decoding(self, coded_bits, index):
         (n, k, H) = parity_lookup(index)
