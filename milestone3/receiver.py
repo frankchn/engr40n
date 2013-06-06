@@ -35,6 +35,9 @@ class Receiver:
         (n, k, H) = parity_lookup(index)
 
         print H
+        
+        print coded_bits
+        
         sys.exit(1)
 
         return []
@@ -177,7 +180,7 @@ class Receiver:
         4. Check whether the first [preamble_length] bits of (3) are equal to
            the preamble. If it is proceed, if not terminate the program. 
         Output is the array of data_bits (bits without preamble)
-		THIS HAS BEEN REMOVED BY REQUEST OF MILESTONE
+        THIS HAS BEEN REMOVED BY REQUEST OF MILESTONE
         '''
 
         return bits[len(preamble):]

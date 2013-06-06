@@ -116,6 +116,8 @@ def parity_lookup(index):
     n = parameters[index][0]
     k = parameters[index][1]
     
+    cc_len = (4 << index) - 1       
+    
     # Reshape G, extract A and compute H:
 
     G = numpy.arange(n*k).reshape(k,n)
@@ -123,14 +125,18 @@ def parity_lookup(index):
     while i < k:
         j = 0
         while j < k:
-            G[i][j] = generating_matrices[index][i * n + (j+n-k)]
+            G[i][j] = generating_matrices[index][i * cc_len + (j+n-k)]
+            #G[i][j] = generating_matrices[index][i][j+n-k]
             j = j+1
         i = i+1
+
     i = 0
+
     while i < k:
         j = k
         while j < n:
-            G[i][j] = generating_matrices[index][i * n + (j-k)]
+            G[i][j] = generating_matrices[index][i * cc_len + (j-k)]
+            #G[i][j] = generating_matrices[index][i][j-k]
             j = j+1
         i = i+1
     
@@ -139,7 +145,7 @@ def parity_lookup(index):
     while i < n-k:
         j = 0
         while j < k:
-            H[i][j] = G[j][i]
+            H[i][j] = G[j][i+k]
             j = j+1
         while j < n:
             H[i][j] = 0
