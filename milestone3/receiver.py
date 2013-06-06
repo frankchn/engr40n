@@ -30,17 +30,75 @@ class Receiver:
         body = rcd_bits[96:]
 
         header_decoded = self.hamming_decoding(header, 2)
+        '''
+        Currently does not prune based on payload length.
+        '''
+        body_decoded = self.hamming_decoding(body, header[0] * 2 + header[1])
+        return body_decoded
 
     def hamming_decoding(self, coded_bits, index):
         (n, k, H) = parity_lookup(index)
 
         print H
         
-        print coded_bits
+        num_columns = len(H[0])
         
-        sys.exit(1)
+        correct_masks = []
+        
+        j = 0
+        while j < num_columns:
+            i = 0
+            curr = 0
+            while i < len(H):
+                curr = curr << 1
+                curr = curr + H[i][j]
+                i = i+1
+            correct_masks.append(curr)
+            j = j+1
+        
+        decoded_bits = []
+        i = 0
+        while i + n <= len(coded_bits):
+            temp = numpy.arange(n).reshape(n,1)
+            j = 0
+            while j < n:
+                temp[j][0] = coded_bits[i+j]
+                j = j+1
+            syndrome_value = 0
+            a = 0
+            while a < n-k:
+                c = 0
+                curr = 0;
+                while c < n:
+                    curr += H[a][c] * temp[c][0]
+                    curr = curr % 2
+                    c = c+1
+                syndrome_value = syndrome_value << 1
+                syndrome_value = syndrome_value + curr
+                a = a+1
+            if syndrome_value == 0:
+                j = 0
+                while j < k:
+                    decoded_bits.append(coded_bits[i+j])
+                    j = j + 1
+            else:
+                j = 0
+                while j < num_columns:
+                    if syndrome_value == correct_masks[j]:
+                        break
+                    j = j+1
+                if j == num_columns:
+                    exit(-1)
+                a = 0
+                while a < k:
+                    bit = coded_bits[i+a]
+                    if a == j:
+                        bit = (bit+1)%2
+                    decoded_bits.append(bit)
+                    a = a+1
+            i = i+n
 
-        return []
+        return decoded_bits
 
     def detect_threshold(self, demod_samples):
         '''
