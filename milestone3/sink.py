@@ -73,7 +73,8 @@ class Sink:
         srctype = {
             0: 'text',
             1: 'image',
-            2: 'monotone'
+            2: 'monotone',
+            3: 'unknown (ERROR!)'
         }[payload_type]
 
         print '\tRecd header: ', header_bits
