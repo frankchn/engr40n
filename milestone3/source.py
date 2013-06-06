@@ -101,7 +101,7 @@ class Source:
             final_stats[i] = int(math.ceil((raw_data_stats[i] * 1.0) / (max(raw_data_stats) * 1.0) * 1022))
 
         data_stats = final_stats
-        print data_stats
+
         huffman_encode = []
         encodings = []
         i = 0
