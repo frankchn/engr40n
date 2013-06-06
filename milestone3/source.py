@@ -98,11 +98,10 @@ class Source:
         final_stats = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
 
         for i in xrange(0, 16):
-            final_stats[i] = int(math.floor((raw_data_stats[i] * 1.0) / (max(raw_data_stats) * 1.0) * 1023))
-            print final_stats[i]
+            final_stats[i] = int(math.ceil((raw_data_stats[i] * 1.0) / (max(raw_data_stats) * 1.0) * 1022))
 
         data_stats = final_stats
-
+        print data_stats
         huffman_encode = []
         encodings = []
         i = 0

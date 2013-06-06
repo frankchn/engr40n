@@ -38,7 +38,7 @@ class Transmitter:
     def hamming_encoding(self, databits, is_header):
         hamming_len = self.hamming_length
         if is_header > 0:
-            hamming_len = 3
+            hamming_len = 31
 
         (n, k, index, G) = gen_lookup(hamming_len)
         print G
