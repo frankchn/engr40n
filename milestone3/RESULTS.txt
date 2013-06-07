@@ -1,0 +1,19 @@
+We tested the values below on 32pix.png
+
+SPB = 64
+Noise = 2.7
+n = 7
+   BER: 0.0516 0.0380 0.0547 0.0757 0.0634
+   Average BER: 0.0567
+n = 31
+   BER: 0.1213 0.1066 0.0930 0.0898 0.1190
+   Average BER: 0.1059
+
+SPB = 64
+Noise 2.0
+n = 7
+   BER: 0.0205 0.0282 0.0239 0.0242 0.0294
+   Average BER: 0.0252 
+n = 31
+   BER: 0.0520 0.0658 0.0577 0.0527 0.0624
+   Average BER: 0.0581 

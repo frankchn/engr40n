@@ -48,65 +48,33 @@ class Receiver:
         (n, k, H) = parity_lookup(index)
         num_columns = len(H[0])
 
-        correct_masks = []
-        
-        total = 0
+        H_T = numpy.transpose(H)        
         errors_corrected = 0
         
-        j = 0
-        while j < num_columns:
-            i = 0
-            curr = 0
-            while i < len(H):
-                curr = curr << 1
-                curr = curr + H[i][j]
-                i = i+1
-            correct_masks.append(curr)
-            j = j+1
-
         decoded_bits = []
         i = 0
         while i + n <= len(coded_bits):
-            total = total + 1
             temp = numpy.arange(n).reshape(n,1)
             j = 0
             while j < n:
                 temp[j][0] = coded_bits[i+j]
                 j = j+1
 
-            syndrome_value = 0
-            a = 0
-            while a < n-k:
-                c = 0
-                curr = 0;
-                while c < n:
-                    curr += H[a][c] * temp[c][0]
-                    curr = curr % 2
-                    c = c+1
-                syndrome_value = syndrome_value << 1
-                syndrome_value = syndrome_value + curr
-                a = a+1
-            if syndrome_value == 0:
-                j = 0
-                while j < k:
-                    decoded_bits.append(temp[j][0])
-                    j = j + 1
-            else:
-                j = 0
-                while j < num_columns:
-                    if syndrome_value == correct_masks[j]:
-                        break
-                    j = j+1
-                if j == num_columns:
-                    exit(-1)
-                a = 0
-                while a < k:
-                    bit = temp[a][0]
-                    if a == j:
-                        bit = (bit+1)%2
-                        errors_corrected = errors_corrected + 1
-                    decoded_bits.append(bit)
-                    a = a+1
+            synd = numpy.transpose(numpy.dot(H, temp) % 2)[0]
+
+            bit_error = -1
+            for z in xrange(len(H_T)):
+                if numpy.array_equal(synd,H_T[z]):
+                    bit_error = z
+                    break
+
+            for z in xrange(k):
+                if bit_error != z:
+                    decoded_bits.append(coded_bits[i+z])
+                else:
+                    errors_corrected += 1
+                    decoded_bits.append((coded_bits[i+z] + 1) % 2)
+
             i = i+n
         
         return decoded_bits, errors_corrected
@@ -169,7 +137,7 @@ class Receiver:
         highest_correlation = -1000
         offset = 0
         
-        while offset <= 2 * self.spb * len(preamble):
+        while offset <= 3 * self.spb * len(preamble):
         #while offset <= 256:
             curr_correlation = 0
             preamble_index = 0

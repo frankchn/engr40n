@@ -24,7 +24,8 @@ def detect_threshold(demod_samples):
   old_center2 = 1000.0 
 
 	# initialization
-  for iterationCount in xrange(0, 5):
+  #for iterationCount in xrange(0, 5):
+  while 1:
 
     # insert code to implement 2-means clustering 	
     c1f = 0
@@ -46,10 +47,11 @@ def detect_threshold(demod_samples):
     center1 = c1f / c1c
     center2 = c2f / c2c
 
-    if(math.fabs(center1 - old_center1) < 0.0001 and math.fabs(center2 - old_center2) < 0.0001):
-      break
-
     print "   > Current Centers at", center1, center2
+
+    if(math.fabs(center1 - old_center1) < 0.0001 and math.fabs(center2 - old_center2) < 0.0001):
+      print "   > Less than threshold of 0.0001. Stopping..."
+      break
 
   one = 0.0
   zero = 0.0
