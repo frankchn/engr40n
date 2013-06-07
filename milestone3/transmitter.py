@@ -63,7 +63,7 @@ class Transmitter:
             coded_chunk = numpy.dot(data_chunk, G)
             
             for z in xrange(0, n):
-                output[x] = coded_chunk[z]
+                output[x] = coded_chunk[z] % 2
                 x += 1
 
             i += k

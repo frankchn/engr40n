@@ -18,7 +18,10 @@ def detect_threshold(demod_samples):
   print " + Detecting threshold with 2-means"
 
   center1 = min(demod_samples)
-  center2 = max(demod_samples) 
+  center2 = max(demod_samples)
+
+  old_center1 = 1000.0
+  old_center2 = 1000.0 
 
 	# initialization
   for iterationCount in xrange(0, 5):
@@ -37,8 +40,16 @@ def detect_threshold(demod_samples):
         c1f += demod_samples[x]
         c1c += 1
 
+    old_center1 = center1
+    old_center2 = center2
+
     center1 = c1f / c1c
     center2 = c2f / c2c
+
+    if(math.fabs(center1 - old_center1) < 0.0001 and math.fabs(center2 - old_center2) < 0.0001):
+      break
+
+    print "   > Current Centers at", center1, center2
 
   one = 0.0
   zero = 0.0

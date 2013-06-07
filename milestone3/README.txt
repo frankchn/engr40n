@@ -1,18 +1,21 @@
 We have implemented both versions of milestone 3.
 
+We tested the values below on 32pix.png
+
 SPB = 64
 Noise = 2.7
 n = 7
-   BER: 0.0778 0.0940 0.126 0.0935 0.0908
-   Average BER: 0.0964
+   BER: 0.0525 0.0536 0.0568 0.0543 0.0593
+   Average BER: 0.0553 (0.0503 ref)
 n = 31
-   BER: 0.127 0.114 0.134 0.123 0.113
-   Average BER: 0.122
+   BER: 0.1084 0.1226 0.1181 0.1109 0.1107
+   Average BER: 0.1141 (0.1004 ref)
 
+SPB = 64
 Noise 2.0
 n = 7
-   BER: 0.0485 0.0537 0.0433 0.0413 0.0409
-   Average BER: 0.04554
+   BER: 0.0205 0.0282 0.0239 0.0242 0.0294
+   Average BER: 0.0252 (0.0195 ref)
 n = 31
-   BER: 0.0939 0.0798 0.0832 0.0798 0.0895
-   Average BER: 0.08524
+   BER: 0.0651 0.0574 0.0527 0.0973 0.0631
+   Average BER: 0.0671 (0.0522 ref)

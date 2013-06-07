@@ -47,7 +47,7 @@ class Receiver:
     def hamming_decoding(self, coded_bits, index):
         (n, k, H) = parity_lookup(index)
         num_columns = len(H[0])
-        
+
         correct_masks = []
         
         total = 0
@@ -63,7 +63,7 @@ class Receiver:
                 i = i+1
             correct_masks.append(curr)
             j = j+1
-        
+
         decoded_bits = []
         i = 0
         while i + n <= len(coded_bits):
@@ -73,6 +73,7 @@ class Receiver:
             while j < n:
                 temp[j][0] = coded_bits[i+j]
                 j = j+1
+
             syndrome_value = 0
             a = 0
             while a < n-k:
